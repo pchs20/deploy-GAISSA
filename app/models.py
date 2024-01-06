@@ -53,6 +53,7 @@ class models_names(Enum):
     Pythia_70m = 5
     Codet5p_220m = 6
     DistilGPT2 = 7
+    Bloom = 8
     
 
 class Model:
@@ -157,7 +158,6 @@ class DistilGPT2(Model):
         model = AutoModelForCausalLM.from_pretrained("distilgpt2")
 
         def infer_gpt2(text):
-            text = user_input
             inputs = tokenizer(text, return_tensors="pt")
             tokens = model.generate(**inputs)
             return tokenizer.decode(tokens[0])
@@ -167,6 +167,28 @@ class DistilGPT2(Model):
         }
         return response
 
+
+class Bloom(Model):
+    """
+            Creates a Bloom model. Inherits from Model()
+            """
+
+    def __init__(self):
+        super().__init__(models_names.Bloom, ML_task.MLM)
+
+    def predict(self, user_input: str) -> dict:
+        tokenizer = AutoTokenizer.from_pretrained("bigscience/bloom")
+        model = AutoModelForCausalLM.from_pretrained("bigscience/bloom")
+
+        def infer_bloom(text):
+            inputs = tokenizer(text, return_tensors="pt")
+            tokens = model.generate(**inputs)
+            return tokenizer.decode(tokens[0])
+
+        response = {
+            "prediction": infer_bloom(user_input)
+        }
+        return response
 
 
 class CodeGenModel(Model):
