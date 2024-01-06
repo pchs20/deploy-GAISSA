@@ -36,12 +36,12 @@ from typing import Dict, List
 
 from fastapi import FastAPI, Request
 
-from app.schemas import IrisType, PredictPayload, PredictBert, PredictT5, PredictCNN, PredictCodeGen, PredictPythia_70m, PredictCodet5p_220m
+from app.schemas import IrisType, PredictPayload, PredictBert, PredictT5, PredictCNN, PredictCodeGen, PredictPythia_70m, PredictCodet5p_220m, PredictDistilGPT2
 
 #from transformers import pipeline
 
 # Local modules
-from app.models import LMBERTModel, Model, T5Model, CNNModel, CodeGenModel, Pythia_70mModel, Codet5p_220mModel
+from app.models import LMBERTModel, Model, T5Model, CNNModel, CodeGenModel, Pythia_70mModel, Codet5p_220mModel, DistilGPT2
 
 print("------------------------modules loaded!------------------------")
 
@@ -240,6 +240,38 @@ def _predict_t5(request: Request, payload: PredictT5):
                 "input_text": input_text,
                 "prediction": prediction,
                 #"predicted_type": predicted_type,
+            },
+        }
+    else:
+        response = {
+            "message": "Model not found",
+            "status-code": HTTPStatus.BAD_REQUEST,
+        }
+    return response
+
+
+@app.post("/huggingface_models/distilgpt2", tags=["Hugging Face Models"])
+@construct_response
+def _predict_distilgpt2(request: Request, payload: PredictDistilGPT2):
+    """DistilGPT2 model."""
+
+    input_text = payload.input_text
+    print("Input text")
+    print(input_text)
+
+    model = DistilGPT2()
+    print(f"Model: {model.name}")
+
+    if input_text:
+        prediction = model.predict(input_text)
+
+        response = {
+            "message": HTTPStatus.OK.phrase,
+            "status-code": HTTPStatus.OK,
+            "data": {
+                "model-type": model.name,
+                "input_text": input_text,
+                "prediction": prediction,
             },
         }
     else:

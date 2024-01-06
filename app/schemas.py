@@ -42,6 +42,16 @@ class PredictT5(BaseModel):
             }
         }
 
+class PredictDistilGPT2(BaseModel):
+    input_text: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "input_text": "My name is Lewis and I like to",
+            }
+        }
+
 class PredictCodeGen(BaseModel):
     input_text: str
 
