@@ -6,5 +6,4 @@ pythia-70m-deduped/
 .ipynb_checkpoints
 *.pyc
 *.cfg
-env/
 .idea

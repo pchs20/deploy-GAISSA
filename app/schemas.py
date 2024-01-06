@@ -52,6 +52,16 @@ class PredictDistilGPT2(BaseModel):
             }
         }
 
+class PredictBloom(BaseModel):
+    input_text: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "input_text": "Poor English: She no went to the market. Corrected English:",
+            }
+        }
+
 class PredictCodeGen(BaseModel):
     input_text: str
 
