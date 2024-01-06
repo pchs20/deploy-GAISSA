@@ -52,6 +52,7 @@ class models_names(Enum):
     CNN = 4
     Pythia_70m = 5
     Codet5p_220m = 6
+    DistilGPT2 = 7
     
 
 class Model:
@@ -124,7 +125,7 @@ class T5Model(Model):
     Creates a T5 model. Inherits from Model()
     """
     def __init__(self):
-        super().__init__(models_names.T5, models_names.T5)
+        super().__init__(models_names.T5, ML_task.TRANSLATION)
         
     def predict(self, user_input: str, n = 5):
         #user_text = input('Enter text with [MASK]: ')
@@ -141,6 +142,31 @@ class T5Model(Model):
             "prediction" : infer_t5(user_input)
         }
         return response
+
+
+class DistilGPT2(Model):
+    """
+        Creates a DistilGPT2 model. Inherits from Model()
+        """
+
+    def __init__(self):
+        super().__init__(models_names.DistilGPT2, ML_task.MLM)
+
+    def predict(self, user_input : str) -> dict:
+        tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
+        model = AutoModelForCausalLM.from_pretrained("distilgpt2")
+
+        def infer_gpt2(text):
+            text = user_input
+            inputs = tokenizer(text, return_tensors="pt")
+            tokens = model.generate(**inputs)
+            return tokenizer.decode(tokens[0])
+
+        response = {
+            "prediction": infer_gpt2(user_input)
+        }
+        return response
+
 
 
 class CodeGenModel(Model):
